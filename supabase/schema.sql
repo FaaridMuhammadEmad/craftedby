@@ -8,7 +8,10 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   username text not null unique check (username ~ '^[a-z0-9_]{3,20}$'),
-  mobile text,
+  gender text,
+  dob date,
+  country text,
+  city text,
   created_at timestamptz not null default now()
 );
 
@@ -24,7 +27,7 @@ create policy "profiles: owner can update"
   on public.profiles for update
   using (auth.uid() = id);
 
--- Create the profile row when a user signs up. Username/mobile arrive in
+-- Create the profile row when a user signs up. The fields arrive in
 -- auth metadata (options.data on supabase.auth.signUp).
 create or replace function public.handle_new_user()
 returns trigger
@@ -33,11 +36,14 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, username, mobile)
+  insert into public.profiles (id, username, gender, dob, country, city)
   values (
     new.id,
     lower(new.raw_user_meta_data ->> 'username'),
-    nullif(new.raw_user_meta_data ->> 'mobile', '')
+    nullif(new.raw_user_meta_data ->> 'gender', ''),
+    nullif(new.raw_user_meta_data ->> 'dob', '')::date,
+    nullif(new.raw_user_meta_data ->> 'country', ''),
+    nullif(new.raw_user_meta_data ->> 'city', '')
   );
   return new;
 end;

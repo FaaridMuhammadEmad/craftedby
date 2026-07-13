@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase, USERNAME_RE } from '../lib/supabase'
+import { COUNTRIES } from '../lib/countries'
 
 export default function Signup() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     email: '',
     username: '',
-    mobile: '',
+    gender: '',
+    dob: '',
+    country: '',
+    city: '',
     password: '',
     confirm: '',
   })
@@ -49,7 +53,13 @@ export default function Signup() {
         email: form.email.trim(),
         password: form.password,
         options: {
-          data: { username, mobile: form.mobile.trim() },
+          data: {
+            username,
+            gender: form.gender,
+            dob: form.dob,
+            country: form.country,
+            city: form.city.trim(),
+          },
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       })
@@ -94,15 +104,40 @@ export default function Signup() {
             onChange={set('username')}
           />
         </label>
-        <label className="field">
-          <span>Mobile (optional, not verified)</span>
-          <input
-            type="tel"
-            placeholder="+971 …"
-            value={form.mobile}
-            onChange={set('mobile')}
-          />
-        </label>
+        <div className="field-grid">
+          <label className="field">
+            <span>Gender</span>
+            <select required value={form.gender} onChange={set('gender')}>
+              <option value="" disabled>Select…</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Date of birth</span>
+            <input
+              type="date"
+              required
+              max={new Date().toISOString().slice(0, 10)}
+              value={form.dob}
+              onChange={set('dob')}
+            />
+          </label>
+          <label className="field">
+            <span>Country of residence</span>
+            <select required value={form.country} onChange={set('country')}>
+              <option value="" disabled>Select…</option>
+              {COUNTRIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </label>
+          <label className="field">
+            <span>City</span>
+            <input type="text" required value={form.city} onChange={set('city')} />
+          </label>
+        </div>
         <label className="field">
           <span>Password</span>
           <input type="password" required value={form.password} onChange={set('password')} />

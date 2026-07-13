@@ -8,7 +8,8 @@ Portfolio builder web app ("craftedBy" brand, `craftedby` machine name). Users s
 - Backend: Supabase (Postgres + auth + storage) via `@supabase/supabase-js`. Frontend-only architecture — security lives in Postgres RLS policies, not client code.
 - `supabase/schema.sql` is the full database setup (tables, triggers, RLS, storage policies). `SETUP.md` documents the one-time Supabase/Vercel provisioning.
 - Supabase credentials come from `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` env vars (`.env.local`, gitignored). Until they're set, the app runs in "not configured" mode: public pages work, auth pages show a setup notice.
-- No SMS/phone verification anywhere — mobile numbers are collected unverified by design (keeps the app free to run). Email OTP + password reset ride on Supabase auth email.
+- No SMS/phone verification anywhere (keeps the app free to run). Signup collects gender, date of birth, country and city into `profiles`. Email OTP + password reset ride on Supabase auth email; note this project issues 8-digit OTP codes.
+- Schema changes for existing installs go in `supabase/migrations/` as numbered files the user runs manually in the SQL Editor; `schema.sql` stays current for fresh installs.
 
 ## Key layout
 
