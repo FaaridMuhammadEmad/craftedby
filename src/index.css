@@ -261,6 +261,21 @@ code {
 .step h3 { margin: 10px 0 8px; font-size: 20px; }
 .step p { color: var(--dim); font-size: 14px; line-height: 1.6; margin: 0; }
 
+/* ---- pricing banner ---- */
+.pricing-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 24px;
+  background: rgba(255, 98, 71, 0.12);
+  border-bottom: 1px solid var(--red);
+  font-size: 13px;
+}
+.pricing-banner strong { color: var(--red); }
+.banner-close {
+  background: none; border: 1px solid var(--line); color: var(--chalk);
+  cursor: pointer; padding: 2px 8px; font-size: 12px;
+}
+.banner-close:hover { border-color: var(--red); color: var(--red); }
+
 /* ---- 404 ---- */
 .notfound { text-align: center; }
 .nf-code {

@@ -1,6 +1,31 @@
+import { useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { isConfigured } from '../lib/supabase'
+
+const PRICING_SEEN_KEY = 'craftedby-pricing-notice-dismissed'
+
+function PricingNotice({ session }) {
+  const [dismissed, setDismissed] = useState(
+    () => localStorage.getItem(PRICING_SEEN_KEY) === '1'
+  )
+  if (!session || dismissed) return null
+  const close = () => {
+    localStorage.setItem(PRICING_SEEN_KEY, '1')
+    setDismissed(true)
+  }
+  return (
+    <div className="pricing-banner" role="status">
+      <span>
+        <strong>Early access:</strong> craftedBy is free until <strong>15 August 2026</strong> —
+        after that, $10 / month.
+      </span>
+      <button className="banner-close" onClick={close} aria-label="Dismiss notice">
+        ✕
+      </button>
+    </div>
+  )
+}
 
 function ConfigNotice() {
   if (isConfigured) return null
@@ -47,6 +72,7 @@ export default function Shell() {
         </div>
       </header>
       <ConfigNotice />
+      <PricingNotice session={session} />
       <main className="page">
         <Outlet />
       </main>
