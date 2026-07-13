@@ -24,11 +24,21 @@ export default function VerifyEmail() {
     setError('')
     setBusy(true)
     try {
-      const { error: otpError } = await supabase.auth.verifyOtp({
+      // Newer Supabase projects verify signup codes as type 'email',
+      // older ones as type 'signup' — accept whichever works.
+      let { error: otpError } = await supabase.auth.verifyOtp({
         email,
         token: token.trim(),
         type: 'signup',
       })
+      if (otpError) {
+        const retry = await supabase.auth.verifyOtp({
+          email,
+          token: token.trim(),
+          type: 'email',
+        })
+        otpError = retry.error
+      }
       if (otpError) {
         setError(otpError.message)
         return
